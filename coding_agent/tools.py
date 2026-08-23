@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+from unittest import result
 
 WORKSPACE = None
 
@@ -78,7 +79,7 @@ def list_files(path="."):
                 str(item.relative_to(WORKSPACE))
             )
 
-    return files
+    return sorted(files)
 
 
 def find_file(filename: str):
@@ -95,7 +96,7 @@ def find_file(filename: str):
 
         if item.is_file():
 
-            if item.name.lower() == filename.lower():
+            if filename.lower() in item.name.lower():
 
                 matches.append(
                     str(item.relative_to(WORKSPACE))
@@ -118,6 +119,17 @@ def search_files(query: str):
         ):
             continue
 
+        relative_path = str(
+            item.relative_to(WORKSPACE)
+        )
+
+        # Search filename/path
+        if query in relative_path.lower():
+
+            matches.append(
+                f"PATH: {relative_path}"
+            )
+
         if not item.is_file():
             continue
 
@@ -131,13 +143,16 @@ def search_files(query: str):
             if query in text.lower():
 
                 matches.append(
-                    str(item.relative_to(WORKSPACE))
+                    f"CONTENT: {relative_path}"
                 )
 
         except Exception:
             pass
 
-    return matches
+    if not matches:
+        return f"No matches found for '{query}'"
+
+    return matches[:100]
 
 
 def read_file(path: str):
@@ -258,7 +273,8 @@ def replace_text(
 # ============================================================
 
 def run_command(command: str):
-
+    if WORKSPACE is None:
+        return "ERROR: Workspace not configured"
     try:
 
         result = subprocess.run(
@@ -270,11 +286,20 @@ def run_command(command: str):
             timeout=30
         )
 
-        return (
-            f"STDOUT:\n{result.stdout}\n\n"
-            f"STDERR:\n{result.stderr}\n\n"
+        
+        output = ""
+
+        if result.stdout:
+            output += f"STDOUT:\n{result.stdout}\n"
+
+        if result.stderr:
+            output += f"STDERR:\n{result.stderr}\n"
+
+        output += (
             f"RETURN CODE: {result.returncode}"
         )
+
+        return output
 
     except subprocess.TimeoutExpired:
 
@@ -488,4 +513,4 @@ def execute_tool(name, arguments):
             arguments["command"]
         )
 
-    return f"Unknown tool: {name}"
+    return f"ERROR: Unknown tool: {name}"
