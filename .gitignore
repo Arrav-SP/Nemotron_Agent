@@ -1,6 +1,24 @@
-.env
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
 __pycache__/
 *.pyc
-.venv/
-venv/
-coding_agent.egg-info/
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# Packaging artifacts
+*.egg-info/
+dist/
+build/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

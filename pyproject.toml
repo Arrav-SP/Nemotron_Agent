@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coding-agent"
+version = "0.2.0"
+description = "Autonomous coding agent powered by NVIDIA Nemotron"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "openai",
+    "python-dotenv"
+]
+
+authors = [
+    {name = "Arrav"}
+]
+
+[project.urls]
+Homepage = "https://github.com/Arrav-SP/Nemotron_Agent"
+Repository = "https://github.com/Arrav-SP/Nemotron_Agent"
+
+[tool.setuptools.packages.find]
+where = ["."]
